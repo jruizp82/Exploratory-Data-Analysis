@@ -1,0 +1,18 @@
+# Read the data file
+## This two lines will likely take a few seconds. Be patient!
+NEI <- readRDS("data/summarySCC_PM25.rds")
+SCC <- readRDS("data/Source_Classification_Code.rds")
+
+# Load libraries
+library(plyr)
+library(ggplot2)
+
+typePM25ByYear <- ddply(BaltimoreCity, .(year, type), function(x) sum(x$Emissions))
+colnames(typePM25ByYear)[3] <- "Emissions"
+
+png("plot3.png")
+qplot(year, Emissions, data=typePM25ByYear, color=type, geom="line") +
+        ggtitle(expression("Baltimore City" ~ PM[2.5] ~ "Emissions by Source Type and Year")) +
+        xlab("Year") +
+        ylab(expression("Total" ~ PM[2.5] ~ "Emissions (tons)"))
+dev.off()
